@@ -29,17 +29,20 @@ def get_todos(branch: str, todo_type: str) -> List[str]:
         yield added_line[todo_index:]
 
 
-if __name__ == "__main__":
-    branch = 'origin/master'
-    if len(sys.argv) > 1:
-        branch = sys.argv[1]
+def get_arg(index: int, default: str) -> str:
+    if len(sys.argv) > index:
+        return sys.argv[index]
+    return default
 
-    todo_type = 'todo'
-    if len(sys.argv) > 2:
-        todo_type = sys.argv[2]
 
+def main():
+    branch = get_arg(1, 'origin/master')
+    todo_type = get_arg(2, 'todo')
     all_todos = [todo for todo in get_todos(branch, todo_type)]
     all_todos.sort()
-
     for todo in all_todos:
         print(todo)
+
+
+if __name__ == "__main__":
+    main()
