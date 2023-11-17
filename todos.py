@@ -6,16 +6,20 @@ from typing import List
 
 
 def get_added_lines(branch: str) -> List[str]:
+    diff_output = execute_shell_command(['git', 'diff', branch])
+    diff_lines = diff_output.split('\n')
+    for line in diff_lines:
+        if not line.startswith('+'):
+            continue
+        yield line
+
+
+def execute_shell_command(command):
     try:
-        git_command = ['git', 'diff', branch]
-        diff_output = subprocess.check_output(git_command, universal_newlines=True)
-        diff_lines = diff_output.split('\n')
-        for line in diff_lines:
-            if not line.startswith('+'):
-                continue
-            yield line
+        return subprocess.check_output(command, universal_newlines=True)
     except subprocess.CalledProcessError as e:
-        print(f"Error running git diff: {e}")
+        print(f"Error running command {command}: {e}")
+        exit(1)
 
 
 def get_todos(branch: str, todo_type: str) -> List[str]:
